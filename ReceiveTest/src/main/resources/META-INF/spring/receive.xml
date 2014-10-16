@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:int="http://www.springframework.org/schema/integration"
+	xmlns:int-jms="http://www.springframework.org/schema/integration/jms"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration-2.2.xsd
+		http://www.springframework.org/schema/integration/jms http://www.springframework.org/schema/integration/jms/spring-integration-jms.xsd">
+
+	<int:channel id="inchannel"></int:channel>
+	<int:channel id="channel1"></int:channel>
+	<int:channel id="channel2"></int:channel>
+	<int:channel id="channel3"></int:channel>
+	<int:channel id="create"></int:channel>
+	<int:channel id="update"></int:channel>
+	<int:channel id="delete"></int:channel>
+	
+	<int:channel id="outChannel">
+		<int:queue capacity="100" />
+	</int:channel>
+
+	<int-jms:message-driven-channel-adapter
+		id="jmsdriven" channel="inchannel" connection-factory="connectionFactory"
+		destination="positionsQueue" />
+
+	<int:json-to-object-transformer
+		input-channel="inchannel" output-channel="channel1" type="jp.com.inotaku.domain.Book">
+	</int:json-to-object-transformer>
+
+	<int:header-value-router input-channel="channel1"
+		header-name="status" default-output-channel="outChannel"
+		resolution-required="false">
+		<int:mapping value="create" channel="create" />
+		<int:mapping value="update" channel="update" />
+		<int:mapping value="delete" channel="delete" />
+	</int:header-value-router>
+
+	<int:service-activator input-channel="create"
+		output-channel="outChannel" ref="serviceActivator" method="create">
+	</int:service-activator>
+
+	<int:service-activator input-channel="update"
+		output-channel="outChannel" ref="serviceActivator" method="update">
+	</int:service-activator>
+
+	<int:service-activator input-channel="delete"
+		output-channel="outChannel" ref="serviceActivator" method="delete">
+	</int:service-activator>
+	
+	<!-- <int:service-activator input-channel="outChannel"
+		 ref="serviceActivator" method="error">
+	</int:service-activator> -->
+
+	<bean id="serviceActivator" class="jp.com.inotaku.activator.ServiceActivator">
+	</bean>
+	<bean id="positionsQueue" class="org.apache.activemq.command.ActiveMQQueue">
+		<constructor-arg value="テスト"></constructor-arg>
+	</bean>
+
+	<bean name="connectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+		<property name="brokerURL" value="tcp://localhost:61616"></property>
+	</bean>
+
+</beans>
