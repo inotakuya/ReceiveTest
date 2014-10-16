@@ -1,6 +1,9 @@
 package jp.com.inotaku.domain;
 
 import static org.junit.Assert.*;
+
+import java.util.List;
+
 import jp.com.inotaku.repository.BookRepository;
 import jp.com.inotaku.service.*;
 
@@ -16,7 +19,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations="classpath:META-INF/spring/*.xml")
+@ContextConfiguration(locations="classpath:META-INF/spring/**/*.xml")
 public class ReceiveTest {
 
 	@Autowired

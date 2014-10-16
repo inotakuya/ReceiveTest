@@ -76,6 +76,7 @@ public class BookController {
 			}*/
 			uiModel.addAttribute("books", Book.findBookEntries(firstResult,
 					sizeNo, sortFieldName, sortOrder));
+			System.out.println(Book.findBookEntries(firstResult, sizeNo, sortFieldName, sortOrder));
 			float nrOfPages = (float) bookService.countAllBooks() / sizeNo;
 			uiModel.addAttribute(
 					"maxPages",

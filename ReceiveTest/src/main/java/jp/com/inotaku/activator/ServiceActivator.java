@@ -1,10 +1,12 @@
 package jp.com.inotaku.activator;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import jp.com.inotaku.domain.Book;
 import jp.com.inotaku.service.BookService;
 
+@Transactional
 public class ServiceActivator {
 
 	@Autowired

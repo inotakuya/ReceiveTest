@@ -16,7 +16,7 @@ public class Book {
     /**
      */
     @NotNull
-    @Column(unique = true)
+    /*@Column(unique = true)*/
     private long bookId;
 
     /**

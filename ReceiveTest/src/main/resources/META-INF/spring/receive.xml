@@ -19,7 +19,7 @@
 	</int:channel>
 
 	<int-jms:message-driven-channel-adapter
-		id="jmsdriven" channel="inchannel" connection-factory="connectionFactory"
+		id="jmsdriven" channel="inchannel" connection-factory="connectionFactory" 
 		destination="positionsQueue" />
 
 	<int:json-to-object-transformer
@@ -27,7 +27,7 @@
 	</int:json-to-object-transformer>
 
 	<int:header-value-router input-channel="channel1"
-		header-name="status" default-output-channel="outChannel"
+		header-name="status" default-output-channel="error"
 		resolution-required="false">
 		<int:mapping value="create" channel="create" />
 		<int:mapping value="update" channel="update" />
@@ -46,9 +46,9 @@
 		output-channel="outChannel" ref="serviceActivator" method="delete">
 	</int:service-activator>
 	
-	<!-- <int:service-activator input-channel="outChannel"
-		 ref="serviceActivator" method="error">
-	</int:service-activator> -->
+	<int:service-activator input-channel="error"
+	output-channel="outChannel" ref="serviceActivator" method="error">
+	</int:service-activator>
 
 	<bean id="serviceActivator" class="jp.com.inotaku.activator.ServiceActivator">
 	</bean>
